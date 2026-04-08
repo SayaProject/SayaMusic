@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
+import { Loader } from "./Loader";
 import { searchYouTube, getTrendingMusic, type YouTubeVideo } from "@/lib/youtube";
 import { SongRow } from "./SongRow";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
@@ -127,7 +128,7 @@ export function HomeTab() {
         </div>
         <div ref={loaderRef} className="py-4 text-center">
           {loading && (
-            <div className="text-muted-foreground text-sm">Loading...</div>
+            <div className="flex justify-center"><Loader /></div>
           )}
         </div>
       </div>
