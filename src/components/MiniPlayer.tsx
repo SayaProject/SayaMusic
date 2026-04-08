@@ -1,16 +1,20 @@
-import { SkipBack, SkipForward, Play, Pause } from "lucide-react";
+import { SkipForward, Play, Pause } from "lucide-react";
+import { motion } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
-import { useRef, useEffect } from "react";
 
 export function MiniPlayer() {
   const { currentTrack, isPlaying, togglePlay, playNext } = usePlayerStore();
-  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   if (!currentTrack) return null;
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-40 px-3">
-      <div className="glass-navbar rounded-2xl p-3 flex items-center gap-3 max-w-lg mx-auto shadow-lg shadow-black/30">
+    <div className="fixed bottom-20 left-0 right-0 z-40 flex justify-center px-3">
+      <motion.div
+        initial={{ y: 40, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className="glass-navbar rounded-2xl p-3 flex items-center gap-3 w-full max-w-sm shadow-lg shadow-black/30"
+      >
         <img
           src={currentTrack.thumbnail}
           alt=""
@@ -36,22 +40,14 @@ export function MiniPlayer() {
             <SkipForward className="w-5 h-5 text-foreground" />
           </button>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Hidden YouTube iframe for audio */}
       {isPlaying && (
         <iframe
-          ref={iframeRef}
           src={`https://www.youtube.com/embed/${currentTrack.id}?autoplay=1&enablejsapi=1`}
           allow="autoplay"
           className="w-0 h-0 absolute opacity-0 pointer-events-none"
           title="player"
-          onLoad={() => {
-            // Auto-play next when video ends
-            setTimeout(() => {
-              playNext();
-            }, 300000); // fallback 5min
-          }}
         />
       )}
     </div>
