@@ -1,4 +1,5 @@
 import { Home, Music, User } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface BottomNavProps {
   active: string;
@@ -13,22 +14,31 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="glass-navbar rounded-t-2xl flex items-center justify-around py-2 max-w-lg mx-auto">
+    <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-4 pb-3">
+      <div className="glass-navbar rounded-full flex items-center justify-around py-1.5 px-2 w-72">
         {tabs.map((tab) => {
           const isActive = active === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => onNavigate(tab.id)}
-              className={`flex flex-col items-center gap-0.5 px-5 py-1.5 rounded-full transition-all ${
-                isActive
-                  ? "bg-muted text-primary"
-                  : "text-muted-foreground"
-              }`}
+              className="relative flex flex-col items-center gap-0.5 px-5 py-2 rounded-full transition-colors"
             >
-              <tab.icon className={`w-5 h-5 ${isActive ? "text-primary" : ""}`} />
-              <span className="text-[10px] font-medium">{tab.label}</span>
+              {isActive && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute inset-0 rounded-full bg-muted"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <tab.icon
+                className={`w-5 h-5 relative z-10 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}`}
+              />
+              <span
+                className={`text-[10px] font-medium relative z-10 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}`}
+              >
+                {tab.label}
+              </span>
             </button>
           );
         })}

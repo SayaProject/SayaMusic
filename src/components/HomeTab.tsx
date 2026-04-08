@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { motion } from "framer-motion";
 import { searchYouTube, getTrendingMusic, type YouTubeVideo } from "@/lib/youtube";
 import { SongRow } from "./SongRow";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
@@ -72,7 +73,12 @@ export function HomeTab() {
   return (
     <div className="flex flex-col pb-36">
       <div className="gradient-header px-4 pt-6 pb-4">
-        <div className="flex items-center justify-between mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="flex items-center justify-between mb-4"
+        >
           <h1 className="text-2xl font-bold text-foreground">{greeting()}</h1>
           {user.photo_url ? (
             <img
@@ -85,8 +91,13 @@ export function HomeTab() {
               {user.first_name[0]}
             </div>
           )}
-        </div>
-        <div className="glass-input flex items-center gap-2 rounded-full px-4 py-2.5">
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="glass-input flex items-center gap-2 rounded-full px-4 py-2.5"
+        >
           <Search className="w-4 h-4 text-muted-foreground" />
           <input
             className="bg-transparent outline-none flex-1 text-sm text-foreground placeholder:text-muted-foreground"
@@ -95,7 +106,7 @@ export function HomeTab() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           />
-        </div>
+        </motion.div>
       </div>
 
       <div className="px-4 mt-4">
@@ -103,8 +114,15 @@ export function HomeTab() {
           {query ? "Search Results" : "Popular Now"}
         </h2>
         <div className="flex flex-col gap-1">
-          {songs.map((song) => (
-            <SongRow key={song.id} song={song} />
+          {songs.map((song, i) => (
+            <motion.div
+              key={song.id}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.25, delay: Math.min(i * 0.03, 0.3) }}
+            >
+              <SongRow song={song} />
+            </motion.div>
           ))}
         </div>
         <div ref={loaderRef} className="py-4 text-center">
