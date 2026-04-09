@@ -1,4 +1,5 @@
-import { Download, Plus, Heart } from "lucide-react";
+import { Plus, Heart } from "lucide-react";
+import { motion } from "framer-motion";
 import type { YouTubeVideo } from "@/lib/youtube";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 
@@ -9,14 +10,16 @@ export function SongRow({ song }: { song: YouTubeVideo }) {
   const isLiked = usePlayerStore((s) => s.isLiked(song.id));
 
   return (
-    <div
-      className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer group"
+    <motion.div
+      whileTap={{ scale: 0.97 }}
+      className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer group song-row"
       onClick={() => setTrack(song)}
     >
       <img
         src={song.thumbnail}
         alt={song.title}
         className="w-12 h-12 rounded-md object-cover flex-shrink-0"
+        draggable={false}
       />
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-foreground truncate">
@@ -27,7 +30,8 @@ export function SongRow({ song }: { song: YouTubeVideo }) {
         </p>
       </div>
       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button
+        <motion.button
+          whileTap={{ scale: 0.8 }}
           onClick={(e) => {
             e.stopPropagation();
             toggleLike(song);
@@ -37,8 +41,9 @@ export function SongRow({ song }: { song: YouTubeVideo }) {
           <Heart
             className={`w-4 h-4 ${isLiked ? "fill-primary text-primary" : "text-muted-foreground"}`}
           />
-        </button>
-        <button
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.8 }}
           onClick={(e) => {
             e.stopPropagation();
             addToPlaylist(song);
@@ -46,8 +51,8 @@ export function SongRow({ song }: { song: YouTubeVideo }) {
           className="p-1.5 rounded-full hover:bg-muted transition-colors"
         >
           <Plus className="w-4 h-4 text-muted-foreground" />
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }

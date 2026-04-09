@@ -12,6 +12,7 @@ export function HomeTab() {
   const [songs, setSongs] = useState<YouTubeVideo[]>([]);
   const [nextToken, setNextToken] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
   const setQueue = usePlayerStore((s) => s.setQueue);
   const user = getTelegramUser();
@@ -24,6 +25,7 @@ export function HomeTab() {
   };
 
   const loadTrending = useCallback(async (token?: string) => {
+    if (!token) setInitialLoading(true);
     setLoading(true);
     try {
       const res = await getTrendingMusic(token);
@@ -32,10 +34,12 @@ export function HomeTab() {
       setQueue(token ? [...songs, ...res.videos] : res.videos);
     } catch {}
     setLoading(false);
+    setInitialLoading(false);
   }, [songs, setQueue]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
+    setInitialLoading(true);
     setLoading(true);
     try {
       const res = await searchYouTube(query);
@@ -44,6 +48,7 @@ export function HomeTab() {
       setQueue(res.videos);
     } catch {}
     setLoading(false);
+    setInitialLoading(false);
   };
 
   useEffect(() => {
@@ -111,23 +116,44 @@ export function HomeTab() {
       </div>
 
       <div className="px-4 mt-4">
-        <h2 className="text-lg font-bold text-foreground mb-3">
+        <motion.h2
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-lg font-bold text-foreground mb-3"
+        >
           {query ? "Search Results" : "Popular Now"}
-        </h2>
-        <div className="flex flex-col gap-1">
-          {songs.map((song, i) => (
-            <motion.div
-              key={song.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.25, delay: Math.min(i * 0.03, 0.3) }}
-            >
-              <SongRow song={song} />
-            </motion.div>
-          ))}
-        </div>
+        </motion.h2>
+
+        {initialLoading && songs.length === 0 ? (
+          <div className="flex justify-center py-16">
+            <Loader />
+          </div>
+        ) : songs.length === 0 ? (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center text-muted-foreground py-12"
+          >
+            No results found
+          </motion.p>
+        ) : (
+          <div className="flex flex-col gap-1">
+            {songs.map((song, i) => (
+              <motion.div
+                key={song.id}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.25, delay: Math.min(i * 0.03, 0.3) }}
+              >
+                <SongRow song={song} />
+              </motion.div>
+            ))}
+          </div>
+        )}
+
         <div ref={loaderRef} className="py-4 text-center">
-          {loading && (
+          {loading && songs.length > 0 && (
             <div className="flex justify-center"><Loader /></div>
           )}
         </div>
