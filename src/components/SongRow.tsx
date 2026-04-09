@@ -12,13 +12,13 @@ export function SongRow({ song }: { song: YouTubeVideo }) {
   return (
     <motion.div
       whileTap={{ scale: 0.97 }}
-      className="flex items-center gap-3 py-2.5 px-2 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer group song-row"
+      className="flex items-center gap-3 p-3 rounded-xl glass-card cursor-pointer group"
       onClick={() => setTrack(song)}
     >
       <img
         src={song.thumbnail}
         alt={song.title}
-        className="w-12 h-12 rounded-md object-cover flex-shrink-0"
+        className="w-11 h-11 rounded-lg object-cover flex-shrink-0"
         draggable={false}
       />
       <div className="flex-1 min-w-0">
@@ -29,14 +29,14 @@ export function SongRow({ song }: { song: YouTubeVideo }) {
           {song.channelTitle}
         </p>
       </div>
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1">
         <motion.button
           whileTap={{ scale: 0.8 }}
           onClick={(e) => {
             e.stopPropagation();
             toggleLike(song);
           }}
-          className="p-1.5 rounded-full hover:bg-muted transition-colors"
+          className="p-1.5 rounded-full hover:bg-muted/50 transition-colors"
         >
           <Heart
             className={`w-4 h-4 ${isLiked ? "fill-primary text-primary" : "text-muted-foreground"}`}
@@ -48,7 +48,7 @@ export function SongRow({ song }: { song: YouTubeVideo }) {
             e.stopPropagation();
             addToPlaylist(song);
           }}
-          className="p-1.5 rounded-full hover:bg-muted transition-colors"
+          className="p-1.5 rounded-full hover:bg-muted/50 transition-colors"
         >
           <Plus className="w-4 h-4 text-muted-foreground" />
         </motion.button>
