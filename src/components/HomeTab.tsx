@@ -7,6 +7,15 @@ import { SongRow } from "./SongRow";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getTelegramUser } from "@/lib/telegram";
 
+function dedupeVideos(videos: YouTubeVideo[]): YouTubeVideo[] {
+  const seen = new Set<string>();
+  return videos.filter((v) => {
+    if (seen.has(v.id)) return false;
+    seen.add(v.id);
+    return true;
+  });
+}
+
 export function HomeTab() {
   const [query, setQuery] = useState("");
   const [songs, setSongs] = useState<YouTubeVideo[]>([]);
@@ -14,6 +23,8 @@ export function HomeTab() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const loaderRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
+  const mountedRef = useRef(false);
   const setQueue = usePlayerStore((s) => s.setQueue);
   const user = getTelegramUser();
 
@@ -25,56 +36,81 @@ export function HomeTab() {
   };
 
   const loadTrending = useCallback(async (token?: string) => {
+    if (loadingRef.current) return;
+    loadingRef.current = true;
     if (!token) setInitialLoading(true);
     setLoading(true);
     try {
       const res = await getTrendingMusic(token);
-      setSongs((prev) => (token ? [...prev, ...res.videos] : res.videos));
+      setSongs((prev) => {
+        const merged = token ? dedupeVideos([...prev, ...res.videos]) : res.videos;
+        setQueue(merged);
+        return merged;
+      });
       setNextToken(res.nextPageToken);
-      setQueue(token ? [...songs, ...res.videos] : res.videos);
     } catch {}
     setLoading(false);
     setInitialLoading(false);
-  }, [songs, setQueue]);
+    loadingRef.current = false;
+  }, [setQueue]);
 
   const handleSearch = async () => {
     if (!query.trim()) return;
+    if (loadingRef.current) return;
+    loadingRef.current = true;
     setInitialLoading(true);
     setLoading(true);
     try {
       const res = await searchYouTube(query);
-      setSongs(res.videos);
+      const unique = dedupeVideos(res.videos);
+      setSongs(unique);
       setNextToken(res.nextPageToken);
-      setQueue(res.videos);
+      setQueue(unique);
     } catch {}
     setLoading(false);
     setInitialLoading(false);
+    loadingRef.current = false;
   };
 
   useEffect(() => {
+    if (mountedRef.current) return;
+    mountedRef.current = true;
     loadTrending();
   }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && nextToken && !loading) {
-          if (query) {
-            searchYouTube(query, nextToken).then((res) => {
-              setSongs((p) => [...p, ...res.videos]);
-              setNextToken(res.nextPageToken);
-              setQueue([...songs, ...res.videos]);
+        if (entries[0].isIntersecting && !loadingRef.current) {
+          const currentToken = nextToken;
+          const currentQuery = query;
+          if (!currentToken) return;
+
+          loadingRef.current = true;
+          setLoading(true);
+
+          const fetchFn = currentQuery
+            ? searchYouTube(currentQuery, currentToken)
+            : getTrendingMusic(currentToken);
+
+          fetchFn.then((res) => {
+            setSongs((prev) => {
+              const merged = dedupeVideos([...prev, ...res.videos]);
+              setQueue(merged);
+              return merged;
             });
-          } else {
-            loadTrending(nextToken);
-          }
+            setNextToken(res.nextPageToken);
+          }).finally(() => {
+            setLoading(false);
+            loadingRef.current = false;
+          });
         }
       },
       { threshold: 0.5 }
     );
     if (loaderRef.current) observer.observe(loaderRef.current);
     return () => observer.disconnect();
-  }, [nextToken, loading, query, songs, setQueue, loadTrending]);
+  }, [nextToken, query, setQueue]);
 
   return (
     <div className="flex flex-col pb-36">
@@ -141,7 +177,7 @@ export function HomeTab() {
           <div className="flex flex-col gap-2.5">
             {songs.map((song, i) => (
               <motion.div
-                key={song.id}
+                key={`${song.id}-${i}`}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.25, delay: Math.min(i * 0.03, 0.3) }}
