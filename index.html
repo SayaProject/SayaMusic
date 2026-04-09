@@ -19,8 +19,15 @@
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
   </head>
 
-  <body>
+  <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      document.addEventListener('keydown',function(e){
+        if((e.ctrlKey||e.metaKey)&&(e.key==='u'||e.key==='s'||e.key==='c'||e.key==='a'||e.key==='p'))e.preventDefault();
+        if(e.key==='F12'||((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C')))e.preventDefault();
+        if(e.key==='PrintScreen')e.preventDefault();
+      });
+    </script>
   </body>
 </html>
