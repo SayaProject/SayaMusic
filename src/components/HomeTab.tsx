@@ -138,7 +138,7 @@ export function HomeTab() {
             No results found
           </motion.p>
         ) : (
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2.5">
             {songs.map((song, i) => (
               <motion.div
                 key={song.id}
