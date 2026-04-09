@@ -27,15 +27,25 @@ export function BottomNav({ active, onNavigate }: BottomNavProps) {
               {isActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 rounded-full bg-muted"
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: "hsl(220 15% 18% / 0.8)",
+                    boxShadow: "inset 0 1px 0 hsl(0 0% 100% / 0.06), 0 2px 8px hsl(0 0% 0% / 0.3)",
+                  }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
-              <tab.icon
-                className={`w-5 h-5 relative z-10 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}`}
-              />
+              <motion.div
+                animate={{ scale: isActive ? 1.1 : 1 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="relative z-10"
+              >
+                <tab.icon
+                  className={`w-5 h-5 transition-colors duration-200 ${isActive ? "text-primary" : "text-muted-foreground"}`}
+                />
+              </motion.div>
               <span
-                className={`text-[10px] font-medium relative z-10 transition-colors ${isActive ? "text-primary" : "text-muted-foreground"}`}
+                className={`text-[10px] font-medium relative z-10 transition-colors duration-200 ${isActive ? "text-primary" : "text-muted-foreground"}`}
               >
                 {tab.label}
               </span>

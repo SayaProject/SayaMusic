@@ -13,12 +13,16 @@ export function MiniPlayer() {
         initial={{ y: 40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        className="glass-navbar rounded-2xl p-3 flex items-center gap-3 w-full max-w-sm shadow-lg shadow-black/30"
+        className="glass-navbar rounded-2xl p-3 flex items-center gap-3 w-full max-w-sm"
       >
-        <img
+        <motion.img
           src={currentTrack.thumbnail}
           alt=""
           className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+          draggable={false}
+          animate={isPlaying ? { rotate: 360 } : {}}
+          transition={isPlaying ? { duration: 8, repeat: Infinity, ease: "linear" } : {}}
+          style={{ borderRadius: "8px" }}
         />
         <div className="flex-1 min-w-0">
           <p className="text-xs font-medium text-foreground truncate">
@@ -29,16 +33,16 @@ export function MiniPlayer() {
           </p>
         </div>
         <div className="flex items-center gap-1">
-          <button className="p-1.5" onClick={togglePlay}>
+          <motion.button whileTap={{ scale: 0.85 }} className="p-1.5" onClick={togglePlay}>
             {isPlaying ? (
               <Pause className="w-5 h-5 text-foreground fill-foreground" />
             ) : (
               <Play className="w-5 h-5 text-foreground fill-foreground" />
             )}
-          </button>
-          <button className="p-1.5" onClick={playNext}>
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.85 }} className="p-1.5" onClick={playNext}>
             <SkipForward className="w-5 h-5 text-foreground" />
-          </button>
+          </motion.button>
         </div>
       </motion.div>
 
