@@ -132,7 +132,11 @@ export function HomeTab() {
           transition={{ duration: 0.4 }}
           className="flex items-center justify-between mb-4"
         >
-          <h1 className="text-2xl font-bold text-foreground">{greeting()}</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{greeting()}</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">{timeLabel}</p>
+          </div>
+
           {user.photo_url ? (
             <img
               src={user.photo_url}
