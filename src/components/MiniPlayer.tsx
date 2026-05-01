@@ -139,7 +139,8 @@ export function MiniPlayer() {
     navigator.mediaSession.setActionHandler("play", () => togglePlay());
     navigator.mediaSession.setActionHandler("pause", () => togglePlay());
     navigator.mediaSession.setActionHandler("nexttrack", () => playNext());
-  }, [currentTrack, togglePlay, playNext]);
+    navigator.mediaSession.setActionHandler("previoustrack", () => playPrev());
+  }, [currentTrack, togglePlay, playNext, playPrev]);
 
   // Hidden YT host element — always mounted (rendered via portal-like fixed div below)
   const hiddenHost = (
