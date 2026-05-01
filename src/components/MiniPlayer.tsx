@@ -1,6 +1,6 @@
-import { SkipForward, Play, Pause } from "lucide-react";
+import { SkipForward, SkipBack, Play, Pause } from "lucide-react";
 import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 
 declare global {
@@ -11,7 +11,39 @@ declare global {
 }
 
 export function MiniPlayer() {
-  const { currentTrack, isPlaying, togglePlay, playNext } = usePlayerStore();
+  const { currentTrack, isPlaying, togglePlay, playNext, playPrev } = usePlayerStore();
+  const playerRef = useRef<any>(null);
+  const currentIdRef = useRef<string | null>(null);
+  const readyRef = useRef(false);
+
+  // Stable handlers — stop propagation so taps on icons don't bubble to the card
+  const handlePlayPause = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const p = playerRef.current;
+    try {
+      if (p && readyRef.current) {
+        const state = p.getPlayerState?.();
+        // 1 = playing
+        if (state === 1) p.pauseVideo?.();
+        else p.playVideo?.();
+      }
+    } catch {}
+    togglePlay();
+  }, [togglePlay]);
+
+  const handleNext = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    playNext();
+  }, [playNext]);
+
+  const handlePrev = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    playPrev();
+  }, [playPrev]);
+
   const playerRef = useRef<any>(null);
   const currentIdRef = useRef<string | null>(null);
   const readyRef = useRef(false);
