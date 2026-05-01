@@ -110,24 +110,28 @@ export function MiniPlayer() {
     navigator.mediaSession.setActionHandler("nexttrack", () => playNext());
   }, [currentTrack, togglePlay, playNext]);
 
-  if (!currentTrack) return null;
+  // Hidden YT host element — always mounted (rendered via portal-like fixed div below)
+  const hiddenHost = (
+    <div
+      style={{
+        position: "fixed",
+        width: 1,
+        height: 1,
+        opacity: 0,
+        pointerEvents: "none",
+        left: -9999,
+        top: -9999,
+      }}
+    >
+      <div id="yt-bg-player" />
+    </div>
+  );
+
+  if (!currentTrack) return hiddenHost;
 
   return (
     <>
-      {/* Hidden YT player container — kept mounted for background playback */}
-      <div
-        style={{
-          position: "fixed",
-          width: 1,
-          height: 1,
-          opacity: 0,
-          pointerEvents: "none",
-          left: -9999,
-          top: -9999,
-        }}
-      >
-        <div ref={containerRef} />
-      </div>
+      {hiddenHost}
 
       <div className="fixed bottom-20 left-0 right-0 z-40 flex justify-center px-3">
         <motion.div
