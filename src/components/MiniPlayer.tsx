@@ -13,8 +13,8 @@ declare global {
 export function MiniPlayer() {
   const { currentTrack, isPlaying, togglePlay, playNext } = usePlayerStore();
   const playerRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const currentIdRef = useRef<string | null>(null);
+  const readyRef = useRef(false);
 
   // Load YouTube IFrame API once
   useEffect(() => {
@@ -27,48 +27,52 @@ export function MiniPlayer() {
 
   // Create / update player when track changes
   useEffect(() => {
-    if (!currentTrack || !containerRef.current) return;
+    if (!currentTrack) return;
 
-    const buildPlayer = () => {
+    const buildOrLoad = () => {
       if (!window.YT || !window.YT.Player) return;
-      if (playerRef.current && currentIdRef.current === currentTrack.id) return;
 
-      if (playerRef.current && playerRef.current.loadVideoById) {
-        playerRef.current.loadVideoById(currentTrack.id);
-        currentIdRef.current = currentTrack.id;
+      // If player exists, just swap the video
+      if (playerRef.current && readyRef.current && playerRef.current.loadVideoById) {
+        if (currentIdRef.current !== currentTrack.id) {
+          playerRef.current.loadVideoById(currentTrack.id);
+          currentIdRef.current = currentTrack.id;
+        }
         return;
       }
 
-      playerRef.current = new window.YT.Player(containerRef.current, {
-        height: "1",
-        width: "1",
-        videoId: currentTrack.id,
-        playerVars: { autoplay: 1, controls: 0, playsinline: 1 },
-        events: {
-          onReady: (e: any) => {
-            try {
-              e.target.playVideo();
-            } catch {}
+      // Build once — target the stable DOM id
+      if (!playerRef.current && document.getElementById("yt-bg-player")) {
+        playerRef.current = new window.YT.Player("yt-bg-player", {
+          height: "1",
+          width: "1",
+          videoId: currentTrack.id,
+          playerVars: { autoplay: 1, controls: 0, playsinline: 1 },
+          events: {
+            onReady: (e: any) => {
+              readyRef.current = true;
+              try { e.target.playVideo(); } catch {}
+            },
+            onStateChange: (e: any) => {
+              if (e.data === 0) playNext(); // ended -> next
+            },
           },
-          onStateChange: (e: any) => {
-            // 0 = ended -> auto-advance (infinite)
-            if (e.data === 0) playNext();
-          },
-        },
-      });
-      currentIdRef.current = currentTrack.id;
+        });
+        currentIdRef.current = currentTrack.id;
+      }
     };
 
     if (window.YT && window.YT.Player) {
-      buildPlayer();
+      buildOrLoad();
     } else {
       const prev = window.onYouTubeIframeAPIReady;
       window.onYouTubeIframeAPIReady = () => {
         prev?.();
-        buildPlayer();
+        buildOrLoad();
       };
     }
   }, [currentTrack, playNext]);
+
 
   // Sync play/pause toggle
   useEffect(() => {
@@ -106,24 +110,28 @@ export function MiniPlayer() {
     navigator.mediaSession.setActionHandler("nexttrack", () => playNext());
   }, [currentTrack, togglePlay, playNext]);
 
-  if (!currentTrack) return null;
+  // Hidden YT host element — always mounted (rendered via portal-like fixed div below)
+  const hiddenHost = (
+    <div
+      style={{
+        position: "fixed",
+        width: 1,
+        height: 1,
+        opacity: 0,
+        pointerEvents: "none",
+        left: -9999,
+        top: -9999,
+      }}
+    >
+      <div id="yt-bg-player" />
+    </div>
+  );
+
+  if (!currentTrack) return hiddenHost;
 
   return (
     <>
-      {/* Hidden YT player container — kept mounted for background playback */}
-      <div
-        style={{
-          position: "fixed",
-          width: 1,
-          height: 1,
-          opacity: 0,
-          pointerEvents: "none",
-          left: -9999,
-          top: -9999,
-        }}
-      >
-        <div ref={containerRef} />
-      </div>
+      {hiddenHost}
 
       <div className="fixed bottom-20 left-0 right-0 z-40 flex justify-center px-3">
         <motion.div

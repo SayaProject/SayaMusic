@@ -22,18 +22,29 @@ export function HomeTab() {
   const [nextToken, setNextToken] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [now, setNow] = useState(() => new Date());
   const loaderRef = useRef<HTMLDivElement>(null);
   const loadingRef = useRef(false);
   const mountedRef = useRef(false);
   const setQueue = usePlayerStore((s) => s.setQueue);
   const user = getTelegramUser();
 
+  // Live-updating greeting based on time of day
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
   const greeting = () => {
-    const h = new Date().getHours();
-    if (h < 12) return "Good morning";
-    if (h < 18) return "Good afternoon";
-    return "Good evening";
+    const h = now.getHours();
+    if (h >= 5 && h < 12) return "Good morning";
+    if (h >= 12 && h < 17) return "Good afternoon";
+    if (h >= 17 && h < 21) return "Good evening";
+    return "Good night";
   };
+
+  const timeLabel = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
 
   const loadTrending = useCallback(async (token?: string) => {
     if (loadingRef.current) return;
@@ -121,7 +132,11 @@ export function HomeTab() {
           transition={{ duration: 0.4 }}
           className="flex items-center justify-between mb-4"
         >
-          <h1 className="text-2xl font-bold text-foreground">{greeting()}</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">{greeting()}</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">{timeLabel}</p>
+          </div>
+
           {user.photo_url ? (
             <img
               src={user.photo_url}
