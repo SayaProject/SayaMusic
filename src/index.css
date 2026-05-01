@@ -161,3 +161,26 @@
     opacity: 0;
   }
 }
+
+/* Anti-capture for sensitive sections (best-effort) */
+.no-capture {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.no-capture img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+@media print {
+  .no-capture { visibility: hidden !important; }
+  body::after {
+    content: "Printing/Saving disabled";
+    display: block;
+    font-size: 24px;
+    text-align: center;
+    padding: 40px;
+  }
+}
+
