@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { HomeTab } from "@/components/HomeTab";
 import { PlaylistTab } from "@/components/PlaylistTab";
 import { ProfileTab } from "@/components/ProfileTab";
 import { MiniPlayer } from "@/components/MiniPlayer";
 import { BottomNav } from "@/components/BottomNav";
 import { initTelegramApp } from "@/lib/telegram";
-
-const pageVariants = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -12 },
-};
 
 const Index = () => {
   const [tab, setTab] = useState("home");
@@ -23,21 +17,35 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex justify-center">
       <div className="w-full max-w-lg relative overflow-x-hidden min-h-screen">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="min-h-screen"
-          >
-            {tab === "home" && <HomeTab />}
-            {tab === "playlist" && <PlaylistTab />}
-            {tab === "profile" && <ProfileTab />}
-          </motion.div>
-        </AnimatePresence>
+        {/* Keep all tabs mounted so songs/search/state persist across nav */}
+        <motion.div
+          key="home"
+          animate={{ opacity: tab === "home" ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
+          style={{ display: tab === "home" ? "block" : "none" }}
+          className="min-h-screen"
+        >
+          <HomeTab />
+        </motion.div>
+        <motion.div
+          key="playlist"
+          animate={{ opacity: tab === "playlist" ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
+          style={{ display: tab === "playlist" ? "block" : "none" }}
+          className="min-h-screen"
+        >
+          <PlaylistTab />
+        </motion.div>
+        <motion.div
+          key="profile"
+          animate={{ opacity: tab === "profile" ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
+          style={{ display: tab === "profile" ? "block" : "none" }}
+          className="min-h-screen"
+        >
+          <ProfileTab />
+        </motion.div>
+
         <MiniPlayer />
         <BottomNav active={tab} onNavigate={setTab} />
       </div>
