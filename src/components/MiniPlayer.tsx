@@ -44,9 +44,8 @@ export function MiniPlayer() {
     playPrev();
   }, [playPrev]);
 
-  const playerRef = useRef<any>(null);
-  const currentIdRef = useRef<string | null>(null);
-  const readyRef = useRef(false);
+
+
 
   // Load YouTube IFrame API once
   useEffect(() => {
