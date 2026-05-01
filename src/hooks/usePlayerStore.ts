@@ -14,6 +14,7 @@ interface PlayerState {
   setTrack: (track: YouTubeVideo) => void;
   setQueue: (q: YouTubeVideo[]) => void;
   playNext: () => void;
+  playPrev: () => void;
   togglePlay: () => void;
   addToPlaylist: (v: YouTubeVideo) => void;
   removeFromPlaylist: (id: string) => void;
@@ -59,6 +60,16 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       played: get().played + 1,
       recentlyPlayed: [next, ...recent].slice(0, 20),
     });
+  },
+
+  playPrev: () => {
+    const { queue, currentTrack } = get();
+    if (queue.length === 0) return;
+    const idx = queue.findIndex((t) => t.id === currentTrack?.id);
+    const prevIdx = idx > 0 ? idx - 1 : queue.length - 1;
+    const prev = queue[prevIdx];
+    if (!prev || prev.id === currentTrack?.id) return;
+    set({ currentTrack: prev, isPlaying: true, played: get().played + 1 });
   },
 
   togglePlay: () => set({ isPlaying: !get().isPlaying }),
