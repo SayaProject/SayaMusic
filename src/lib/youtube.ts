@@ -32,12 +32,12 @@ export async function searchYouTube(query: string, pageToken?: string): Promise<
   return { videos, nextPageToken: data.nextPageToken };
 }
 
-export async function getTrendingMusic(pageToken?: string): Promise<{ videos: YouTubeVideo[]; nextPageToken?: string }> {
+export async function getTrendingMusic(pageToken?: string, regionCode = "US"): Promise<{ videos: YouTubeVideo[]; nextPageToken?: string }> {
   const params = new URLSearchParams({
     part: "snippet",
     chart: "mostPopular",
     videoCategoryId: "10",
-    regionCode: "US",
+    regionCode,
     maxResults: "20",
     key: API_KEY,
   });
@@ -54,4 +54,8 @@ export async function getTrendingMusic(pageToken?: string): Promise<{ videos: Yo
   }));
 
   return { videos, nextPageToken: data.nextPageToken };
+}
+
+export async function getIndianTrending(pageToken?: string) {
+  return getTrendingMusic(pageToken, "IN");
 }

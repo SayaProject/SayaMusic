@@ -9,7 +9,7 @@ export function ProfileTab() {
   const { played, liked, downloads, recentlyPlayed, likedSongs } = usePlayerStore();
 
   return (
-    <div className="flex flex-col pb-36">
+    <div className="flex flex-col pb-36 no-capture">
       <div className="gradient-profile pt-8 pb-6 flex flex-col items-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}

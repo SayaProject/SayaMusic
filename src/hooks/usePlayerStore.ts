@@ -46,17 +46,19 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   playNext: () => {
     const { queue, currentTrack } = get();
+    if (queue.length === 0) return;
     const idx = queue.findIndex((t) => t.id === currentTrack?.id);
-    if (idx >= 0 && idx < queue.length - 1) {
-      const next = queue[idx + 1];
-      const recent = get().recentlyPlayed.filter((t) => t.id !== next.id);
-      set({
-        currentTrack: next,
-        isPlaying: true,
-        played: get().played + 1,
-        recentlyPlayed: [next, ...recent].slice(0, 20),
-      });
-    }
+    // Loop back to start for infinite playlist
+    const nextIdx = idx >= 0 && idx < queue.length - 1 ? idx + 1 : 0;
+    const next = queue[nextIdx];
+    if (!next || next.id === currentTrack?.id) return;
+    const recent = get().recentlyPlayed.filter((t) => t.id !== next.id);
+    set({
+      currentTrack: next,
+      isPlaying: true,
+      played: get().played + 1,
+      recentlyPlayed: [next, ...recent].slice(0, 20),
+    });
   },
 
   togglePlay: () => set({ isPlaying: !get().isPlaying }),
