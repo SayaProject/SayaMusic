@@ -135,6 +135,13 @@
     text-shadow: 0 1px 2px hsl(0 0% 0% / 0.25);
   }
 
+  .coowner-badge {
+    background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--muted-foreground)) 100%);
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 4px 14px hsl(var(--accent) / 0.4), inset 0 1px 0 hsl(0 0% 100% / 0.18);
+    text-shadow: 0 1px 2px hsl(0 0% 0% / 0.25);
+  }
+
   .song-row {
     transition: background-color 0.15s ease, transform 0.15s ease;
   }
