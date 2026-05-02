@@ -27,6 +27,8 @@ export function HomeTab() {
   const loadingRef = useRef(false);
   const mountedRef = useRef(false);
   const setQueue = usePlayerStore((s) => s.setQueue);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
+  const queue = usePlayerStore((s) => s.queue);
   const user = getTelegramUser();
 
   // Live-updating greeting based on time of day
@@ -122,6 +124,35 @@ export function HomeTab() {
     if (loaderRef.current) observer.observe(loaderRef.current);
     return () => observer.disconnect();
   }, [nextToken, query, setQueue]);
+
+  // Infinite playlist mode: auto-fetch when player nears end of queue
+  useEffect(() => {
+    if (!currentTrack || queue.length === 0 || !nextToken) return;
+    if (loadingRef.current) return;
+    const idx = queue.findIndex((t) => t.id === currentTrack.id);
+    if (idx === -1) return;
+    // Prefetch when within 3 tracks of the end
+    if (queue.length - idx > 3) return;
+
+    loadingRef.current = true;
+    setLoading(true);
+    const fetchFn = query
+      ? searchYouTube(query, nextToken)
+      : getTrendingMusic(nextToken);
+    fetchFn
+      .then((res) => {
+        setSongs((prev) => {
+          const merged = dedupeVideos([...prev, ...res.videos]);
+          setQueue(merged);
+          return merged;
+        });
+        setNextToken(res.nextPageToken);
+      })
+      .finally(() => {
+        setLoading(false);
+        loadingRef.current = false;
+      });
+  }, [currentTrack, queue, nextToken, query, setQueue]);
 
   return (
     <div className="flex flex-col pb-36">

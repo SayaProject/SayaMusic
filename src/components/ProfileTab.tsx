@@ -1,13 +1,22 @@
-import { Clock, Heart, Crown } from "lucide-react";
+import { Clock, Heart, Crown, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getTelegramUser } from "@/lib/telegram";
-import { isOwner } from "@/lib/owner";
+import { getOwnerRole } from "@/lib/owner";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SongRow } from "./SongRow";
 
 export function ProfileTab() {
   const user = getTelegramUser();
-  const owner = isOwner(user);
+  const role = getOwnerRole(user);
+  const isOwner = role === "owner";
+  const isCoOwner = role === "coowner";
+  const badgeClass = isOwner ? "owner-badge" : "coowner-badge";
+  const RoleIcon = isOwner ? Crown : Shield;
+  const roleLabel = isOwner ? "OWNER" : "CO-OWNER";
+  const roleTip = isOwner
+    ? "Verified account owner of this app"
+    : "Trusted co-owner — helps manage this app";
   const { played, liked, downloads, recentlyPlayed, likedSongs } = usePlayerStore();
 
   return (
@@ -26,16 +35,35 @@ export function ProfileTab() {
                 className="w-28 h-28 rounded-full border-4 border-primary mb-3"
                 draggable={false}
               />
-              {owner && (
-                <motion.div
-                  initial={{ scale: 0, rotate: -30 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.4, type: "spring", stiffness: 400, damping: 15 }}
-                  className="absolute -top-1 -right-1 owner-badge rounded-full p-1.5"
-                  aria-label="Owner"
-                >
-                  <Crown className="w-4 h-4" />
-                </motion.div>
+              {role && (
+                <TooltipProvider delayDuration={150}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <motion.button
+                        type="button"
+                        initial={{ scale: 0, rotate: -30 }}
+                        animate={{
+                          scale: [1, 1.12, 1],
+                          rotate: [0, -8, 8, 0],
+                        }}
+                        transition={{
+                          delay: 0.4,
+                          scale: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+                          rotate: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+                        }}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                        className={`absolute -top-1 -right-1 ${badgeClass} rounded-full p-1.5 cursor-help`}
+                        aria-label={roleLabel}
+                      >
+                        <RoleIcon className="w-4 h-4" />
+                      </motion.button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs font-medium">
+                      {roleTip}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
           ) : (
@@ -43,9 +71,9 @@ export function ProfileTab() {
               <div className="w-28 h-28 rounded-full bg-primary/20 border-4 border-primary flex items-center justify-center text-4xl font-bold text-primary mb-3">
                 {user.first_name[0]}
               </div>
-              {owner && (
-                <div className="absolute -top-1 -right-1 owner-badge rounded-full p-1.5">
-                  <Crown className="w-4 h-4" />
+              {role && (
+                <div className={`absolute -top-1 -right-1 ${badgeClass} rounded-full p-1.5`}>
+                  <RoleIcon className="w-4 h-4" />
                 </div>
               )}
             </div>
@@ -59,15 +87,34 @@ export function ProfileTab() {
         >
           {user.first_name} {user.last_name || ""}
         </motion.h2>
-        {owner && (
-          <motion.span
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className="owner-badge mt-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider flex items-center gap-1"
-          >
-            <Crown className="w-3 h-3" /> OWNER
-          </motion.span>
+        {role && (
+          <TooltipProvider delayDuration={150}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.button
+                  type="button"
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                  whileHover={{ scale: 1.06 }}
+                  whileTap={{ scale: 0.96 }}
+                  className={`${badgeClass} mt-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider flex items-center gap-1 cursor-help`}
+                >
+                  <motion.span
+                    animate={{ rotate: [0, -10, 10, 0] }}
+                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                    className="inline-flex"
+                  >
+                    <RoleIcon className="w-3 h-3" />
+                  </motion.span>
+                  {roleLabel}
+                </motion.button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs font-medium">
+                {roleTip}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
         {user.username && (
           <p className="text-sm text-primary mt-1">@{user.username}</p>
