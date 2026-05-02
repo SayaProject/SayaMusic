@@ -1,13 +1,22 @@
-import { Clock, Heart, Crown } from "lucide-react";
+import { Clock, Heart, Crown, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getTelegramUser } from "@/lib/telegram";
-import { isOwner } from "@/lib/owner";
+import { getOwnerRole } from "@/lib/owner";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SongRow } from "./SongRow";
 
 export function ProfileTab() {
   const user = getTelegramUser();
-  const owner = isOwner(user);
+  const role = getOwnerRole(user);
+  const isOwner = role === "owner";
+  const isCoOwner = role === "coowner";
+  const badgeClass = isOwner ? "owner-badge" : "coowner-badge";
+  const RoleIcon = isOwner ? Crown : Shield;
+  const roleLabel = isOwner ? "OWNER" : "CO-OWNER";
+  const roleTip = isOwner
+    ? "Verified account owner of this app"
+    : "Trusted co-owner — helps manage this app";
   const { played, liked, downloads, recentlyPlayed, likedSongs } = usePlayerStore();
 
   return (
