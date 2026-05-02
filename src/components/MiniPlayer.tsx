@@ -1,6 +1,6 @@
 import { SkipForward, SkipBack, Play, Pause } from "lucide-react";
-import { motion } from "framer-motion";
-import { useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 
 declare global {
@@ -15,6 +15,15 @@ export function MiniPlayer() {
   const playerRef = useRef<any>(null);
   const currentIdRef = useRef<string | null>(null);
   const readyRef = useRef(false);
+  const [isSwitching, setIsSwitching] = useState(false);
+
+  // Crossfade: brief "switching" state on every track change for gapless feel
+  useEffect(() => {
+    if (!currentTrack) return;
+    setIsSwitching(true);
+    const t = setTimeout(() => setIsSwitching(false), 320);
+    return () => clearTimeout(t);
+  }, [currentTrack?.id]);
 
   // Stable handlers — stop propagation so taps on icons don't bubble to the card
   const handlePlayPause = useCallback((e: React.MouseEvent | React.TouchEvent) => {
@@ -173,22 +182,59 @@ export function MiniPlayer() {
           className="glass-navbar rounded-2xl p-2.5 flex items-center gap-2 w-full max-w-sm pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         >
-          <motion.img
-            src={currentTrack.thumbnail}
-            alt=""
-            className="w-10 h-10 rounded-lg object-cover flex-shrink-0 pointer-events-none"
-            draggable={false}
-            animate={isPlaying ? { rotate: 360 } : {}}
-            transition={isPlaying ? { duration: 8, repeat: Infinity, ease: "linear" } : {}}
-            style={{ borderRadius: "8px" }}
-          />
-          <div className="flex-1 min-w-0 pointer-events-none">
-            <p className="text-xs font-medium text-foreground truncate">
-              {currentTrack.title.replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"')}
-            </p>
-            <p className="text-[10px] text-muted-foreground truncate">
-              {currentTrack.channelTitle}
-            </p>
+          <div className="relative w-10 h-10 flex-shrink-0 overflow-hidden rounded-lg">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <motion.img
+                key={currentTrack.id}
+                src={currentTrack.thumbnail}
+                alt=""
+                className="absolute inset-0 w-10 h-10 rounded-lg object-cover pointer-events-none"
+                draggable={false}
+                initial={{ opacity: 0, scale: 1.15, filter: "blur(6px)" }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  filter: "blur(0px)",
+                  rotate: isPlaying ? 360 : 0,
+                }}
+                exit={{ opacity: 0, scale: 0.9, filter: "blur(4px)" }}
+                transition={{
+                  opacity: { duration: 0.32, ease: "easeOut" },
+                  scale: { duration: 0.32, ease: "easeOut" },
+                  filter: { duration: 0.32, ease: "easeOut" },
+                  rotate: isPlaying
+                    ? { duration: 8, repeat: Infinity, ease: "linear" }
+                    : { duration: 0 },
+                }}
+                style={{ borderRadius: "8px" }}
+              />
+            </AnimatePresence>
+            {isSwitching && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.6 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 rounded-lg bg-gradient-to-tr from-primary/40 to-accent/40 pointer-events-none"
+              />
+            )}
+          </div>
+          <div className="flex-1 min-w-0 pointer-events-none overflow-hidden">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={currentTrack.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+              >
+                <p className="text-xs font-medium text-foreground truncate">
+                  {currentTrack.title.replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"')}
+                </p>
+                <p className="text-[10px] text-muted-foreground truncate">
+                  {currentTrack.channelTitle}
+                </p>
+              </motion.div>
+            </AnimatePresence>
           </div>
           <div className="flex items-center gap-0.5 flex-shrink-0">
             <motion.button

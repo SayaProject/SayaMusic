@@ -1,11 +1,13 @@
-import { Clock, Heart } from "lucide-react";
+import { Clock, Heart, Crown } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getTelegramUser } from "@/lib/telegram";
+import { isOwner } from "@/lib/owner";
 import { SongRow } from "./SongRow";
 
 export function ProfileTab() {
   const user = getTelegramUser();
+  const owner = isOwner(user);
   const { played, liked, downloads, recentlyPlayed, likedSongs } = usePlayerStore();
 
   return (
@@ -17,15 +19,35 @@ export function ProfileTab() {
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
           {user.photo_url ? (
-            <img
-              src={user.photo_url}
-              alt="avatar"
-              className="w-28 h-28 rounded-full border-4 border-primary mb-3"
-              draggable={false}
-            />
+            <div className="relative">
+              <img
+                src={user.photo_url}
+                alt="avatar"
+                className="w-28 h-28 rounded-full border-4 border-primary mb-3"
+                draggable={false}
+              />
+              {owner && (
+                <motion.div
+                  initial={{ scale: 0, rotate: -30 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.4, type: "spring", stiffness: 400, damping: 15 }}
+                  className="absolute -top-1 -right-1 owner-badge rounded-full p-1.5"
+                  aria-label="Owner"
+                >
+                  <Crown className="w-4 h-4" />
+                </motion.div>
+              )}
+            </div>
           ) : (
-            <div className="w-28 h-28 rounded-full bg-primary/20 border-4 border-primary flex items-center justify-center text-4xl font-bold text-primary mb-3">
-              {user.first_name[0]}
+            <div className="relative">
+              <div className="w-28 h-28 rounded-full bg-primary/20 border-4 border-primary flex items-center justify-center text-4xl font-bold text-primary mb-3">
+                {user.first_name[0]}
+              </div>
+              {owner && (
+                <div className="absolute -top-1 -right-1 owner-badge rounded-full p-1.5">
+                  <Crown className="w-4 h-4" />
+                </div>
+              )}
             </div>
           )}
         </motion.div>
@@ -37,8 +59,18 @@ export function ProfileTab() {
         >
           {user.first_name} {user.last_name || ""}
         </motion.h2>
+        {owner && (
+          <motion.span
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="owner-badge mt-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider flex items-center gap-1"
+          >
+            <Crown className="w-3 h-3" /> OWNER
+          </motion.span>
+        )}
         {user.username && (
-          <p className="text-sm text-primary">@{user.username}</p>
+          <p className="text-sm text-primary mt-1">@{user.username}</p>
         )}
         <span className="glass-card mt-2 px-3 py-1 rounded-full text-xs text-muted-foreground">
           ID: {user.id}
