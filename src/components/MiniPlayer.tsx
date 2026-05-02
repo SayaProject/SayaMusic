@@ -1,6 +1,6 @@
 import { SkipForward, SkipBack, Play, Pause } from "lucide-react";
-import { motion } from "framer-motion";
-import { useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useCallback, useState } from "react";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 
 declare global {
