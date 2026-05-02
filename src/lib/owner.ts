@@ -3,8 +3,8 @@
 
 import type { TelegramUser } from "./telegram";
 
-// 👇 Replace 0 with your numeric Telegram user ID.
-export const OWNER_TELEGRAM_IDS: number[] = [0];
+// Owner numeric Telegram IDs.
+export const OWNER_TELEGRAM_IDS: number[] = [1329546526];
 
 // Fallback: usernames (case-insensitive, no @).
 export const OWNER_USERNAMES: string[] = ["shnwaz"];
