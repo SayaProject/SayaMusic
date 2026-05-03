@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import type { YouTubeVideo } from "@/lib/youtube";
 
+export type RepeatMode = "off" | "all" | "one";
+
 interface PlayerState {
   currentTrack: YouTubeVideo | null;
   queue: YouTubeVideo[];
@@ -11,6 +13,8 @@ interface PlayerState {
   downloads: number;
   likedSongs: YouTubeVideo[];
   recentlyPlayed: YouTubeVideo[];
+  repeatMode: RepeatMode;
+  reduceMotion: boolean;
   setTrack: (track: YouTubeVideo) => void;
   setQueue: (q: YouTubeVideo[]) => void;
   playNext: () => void;
@@ -20,7 +24,30 @@ interface PlayerState {
   removeFromPlaylist: (id: string) => void;
   toggleLike: (v: YouTubeVideo) => void;
   isLiked: (id: string) => boolean;
+  cycleRepeat: () => void;
+  setReduceMotion: (v: boolean) => void;
 }
+
+const RM_KEY = "pref_reduce_motion";
+const RP_KEY = "pref_repeat_mode";
+
+const initialReduceMotion = (() => {
+  try {
+    const v = localStorage.getItem(RM_KEY);
+    if (v != null) return v === "1";
+    return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  } catch {
+    return false;
+  }
+})();
+
+const initialRepeat: RepeatMode = (() => {
+  try {
+    const v = localStorage.getItem(RP_KEY);
+    if (v === "all" || v === "one" || v === "off") return v;
+  } catch {}
+  return "off";
+})();
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
   currentTrack: null,
@@ -32,6 +59,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   downloads: 0,
   likedSongs: [],
   recentlyPlayed: [],
+  repeatMode: initialRepeat,
+  reduceMotion: initialReduceMotion,
 
   setTrack: (track) => {
     const recent = get().recentlyPlayed.filter((t) => t.id !== track.id);
@@ -46,10 +75,21 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   setQueue: (q) => set({ queue: q }),
 
   playNext: () => {
-    const { queue, currentTrack } = get();
+    const { queue, currentTrack, repeatMode } = get();
     if (queue.length === 0) return;
     const idx = queue.findIndex((t) => t.id === currentTrack?.id);
-    // Loop back to start for infinite playlist
+
+    // Repeat one: replay current track
+    if (repeatMode === "one" && currentTrack) {
+      set({ currentTrack: { ...currentTrack }, isPlaying: true });
+      return;
+    }
+
+    const atEnd = idx === queue.length - 1;
+    if (atEnd && repeatMode === "off") {
+      // stop at end when repeat is off
+      return;
+    }
     const nextIdx = idx >= 0 && idx < queue.length - 1 ? idx + 1 : 0;
     const next = queue[nextIdx];
     if (!next || next.id === currentTrack?.id) return;
@@ -100,4 +140,16 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
 
   isLiked: (id) => !!get().likedSongs.find((s) => s.id === id),
+
+  cycleRepeat: () => {
+    const order: RepeatMode[] = ["off", "all", "one"];
+    const next = order[(order.indexOf(get().repeatMode) + 1) % order.length];
+    try { localStorage.setItem(RP_KEY, next); } catch {}
+    set({ repeatMode: next });
+  },
+
+  setReduceMotion: (v) => {
+    try { localStorage.setItem(RM_KEY, v ? "1" : "0"); } catch {}
+    set({ reduceMotion: v });
+  },
 }));
