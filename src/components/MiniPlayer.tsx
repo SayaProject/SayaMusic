@@ -96,7 +96,13 @@ export function MiniPlayer() {
               try { e.target.playVideo(); } catch {}
             },
             onStateChange: (e: any) => {
-              if (e.data === 0) playNext(); // ended -> next
+              if (e.data === 0) {
+                if (repeatModeRef.current === "one") {
+                  try { e.target.seekTo(0); e.target.playVideo(); } catch {}
+                } else {
+                  playNext();
+                }
+              }
             },
           },
         });
