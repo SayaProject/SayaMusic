@@ -1,9 +1,10 @@
-import { Clock, Heart, Crown, Shield } from "lucide-react";
+import { Clock, Heart, Crown, Shield, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getTelegramUser } from "@/lib/telegram";
 import { getOwnerRole } from "@/lib/owner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
 import { SongRow } from "./SongRow";
 
 export function ProfileTab() {
