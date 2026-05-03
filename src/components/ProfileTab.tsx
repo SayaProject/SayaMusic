@@ -153,6 +153,22 @@ export function ProfileTab() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="glass-card rounded-xl p-4 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">Reduce Motion</p>
+              <p className="text-[11px] text-muted-foreground">Minimize crown & badge animations</p>
+            </div>
+          </div>
+          <Switch checked={reduceMotion} onCheckedChange={setReduceMotion} aria-label="Reduce motion" />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="glass-card rounded-xl p-4"
         >
