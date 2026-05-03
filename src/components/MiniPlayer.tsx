@@ -11,7 +11,7 @@ declare global {
 }
 
 export function MiniPlayer() {
-  const { currentTrack, isPlaying, togglePlay, playNext, playPrev } = usePlayerStore();
+  const { currentTrack, isPlaying, togglePlay, playNext, playPrev, repeatMode, cycleRepeat, reduceMotion } = usePlayerStore();
   const playerRef = useRef<any>(null);
   const currentIdRef = useRef<string | null>(null);
   const readyRef = useRef(false);
