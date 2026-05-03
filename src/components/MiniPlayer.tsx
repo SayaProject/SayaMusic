@@ -1,4 +1,4 @@
-import { SkipForward, SkipBack, Play, Pause } from "lucide-react";
+import { SkipForward, SkipBack, Play, Pause, Repeat, Repeat1 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useCallback, useState } from "react";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
