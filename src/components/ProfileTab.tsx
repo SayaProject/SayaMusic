@@ -108,9 +108,9 @@ export function ProfileTab() {
                   className={`${badgeClass} mt-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider flex items-center gap-1 cursor-help`}
                 >
                   <motion.span
-                    animate={{ rotate: [0, -10, 10, 0] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                    className="inline-flex"
+                  animate={wiggleAnim}
+                  transition={wiggleTransition}
+                  className="inline-flex"
                   >
                     <RoleIcon className="w-3 h-3" />
                   </motion.span>
