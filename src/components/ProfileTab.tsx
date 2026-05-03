@@ -18,7 +18,20 @@ export function ProfileTab() {
   const roleTip = isOwner
     ? "Verified account owner of this app"
     : "Trusted co-owner — helps manage this app";
-  const { played, liked, downloads, recentlyPlayed, likedSongs } = usePlayerStore();
+  const { played, liked, downloads, recentlyPlayed, likedSongs, reduceMotion, setReduceMotion } = usePlayerStore();
+  // When reduceMotion is on, neutralize repeating animations
+  const badgePulse = reduceMotion ? { scale: 1, rotate: 0 } : { scale: [1, 1.12, 1], rotate: [0, -8, 8, 0] };
+  const badgePulseTransition = reduceMotion
+    ? { delay: 0.4 }
+    : {
+        delay: 0.4,
+        scale: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+        rotate: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+      };
+  const wiggleAnim = reduceMotion ? { rotate: 0 } : { rotate: [0, -10, 10, 0] };
+  const wiggleTransition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 2.4, repeat: Infinity, ease: "easeInOut" };
 
   return (
     <div className="flex flex-col pb-36 no-capture">
