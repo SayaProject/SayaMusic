@@ -203,14 +203,14 @@ export function MiniPlayer() {
                   opacity: 1,
                   scale: 1,
                   filter: "blur(0px)",
-                  rotate: isPlaying ? 360 : 0,
+                  rotate: isPlaying && !reduceMotion ? 360 : 0,
                 }}
                 exit={{ opacity: 0, scale: 0.9, filter: "blur(4px)" }}
                 transition={{
-                  opacity: { duration: 0.32, ease: "easeOut" },
-                  scale: { duration: 0.32, ease: "easeOut" },
-                  filter: { duration: 0.32, ease: "easeOut" },
-                  rotate: isPlaying
+                  opacity: { duration: reduceMotion ? 0.15 : 0.32, ease: "easeOut" },
+                  scale: { duration: reduceMotion ? 0.15 : 0.32, ease: "easeOut" },
+                  filter: { duration: reduceMotion ? 0 : 0.32, ease: "easeOut" },
+                  rotate: isPlaying && !reduceMotion
                     ? { duration: 8, repeat: Infinity, ease: "linear" }
                     : { duration: 0 },
                 }}
