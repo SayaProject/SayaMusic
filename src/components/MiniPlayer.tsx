@@ -273,6 +273,24 @@ export function MiniPlayer() {
             >
               <SkipForward className="w-5 h-5 text-foreground fill-foreground" />
             </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.82 }}
+              className="p-2 rounded-full active:bg-white/10 touch-manipulation relative"
+              onClick={(e) => { e.stopPropagation(); e.preventDefault(); cycleRepeat(); }}
+              aria-label={`Repeat: ${repeatMode}`}
+              title={`Repeat: ${repeatMode}`}
+            >
+              {repeatMode === "one" ? (
+                <Repeat1 className="w-5 h-5 text-primary" />
+              ) : (
+                <Repeat
+                  className={`w-5 h-5 ${repeatMode === "all" ? "text-primary" : "text-muted-foreground"}`}
+                />
+              )}
+              {repeatMode !== "off" && (
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+              )}
+            </motion.button>
           </div>
         </motion.div>
       </div>
