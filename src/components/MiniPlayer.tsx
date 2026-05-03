@@ -18,6 +18,23 @@ export function MiniPlayer() {
   const repeatModeRef = useRef(repeatMode);
   useEffect(() => { repeatModeRef.current = repeatMode; }, [repeatMode]);
   const [isSwitching, setIsSwitching] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const hideTimerRef = useRef<number | null>(null);
+
+  const showControls = useCallback(() => {
+    setControlsVisible(true);
+    if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = window.setTimeout(() => setControlsVisible(false), 3500);
+  }, []);
+
+  // Start auto-hide timer when a track loads / changes
+  useEffect(() => {
+    if (!currentTrack) return;
+    showControls();
+    return () => {
+      if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+    };
+  }, [currentTrack?.id, showControls]);
 
   // Crossfade: brief "switching" state on every track change for gapless feel
   useEffect(() => {
@@ -187,8 +204,10 @@ export function MiniPlayer() {
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className="glass-navbar rounded-2xl p-2.5 flex items-center gap-2 w-full max-w-sm pointer-events-auto"
-          onClick={(e) => e.stopPropagation()}
+          className="glass-navbar rounded-2xl pl-2 pr-1.5 py-1.5 flex items-center gap-2 w-full max-w-sm pointer-events-auto border border-white/10 backdrop-blur-2xl shadow-lg shadow-black/30"
+          style={{ backdropFilter: "blur(30px) saturate(180%)", WebkitBackdropFilter: "blur(30px) saturate(180%)" }}
+          onClick={(e) => { e.stopPropagation(); showControls(); }}
+          onPointerMove={showControls}
         >
           <div className="relative w-10 h-10 flex-shrink-0 overflow-hidden rounded-lg">
             <AnimatePresence mode="popLayout" initial={false}>
@@ -244,10 +263,20 @@ export function MiniPlayer() {
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className="flex items-center gap-0 flex-shrink-0">
+          <motion.div
+            className="flex items-center gap-0 flex-shrink-0 overflow-hidden"
+            animate={{
+              opacity: controlsVisible ? 1 : 0,
+              width: controlsVisible ? "auto" : 0,
+              marginLeft: controlsVisible ? 0 : -4,
+            }}
+            initial={false}
+            transition={{ duration: 0.28, ease: "easeOut" }}
+            style={{ pointerEvents: controlsVisible ? "auto" : "none" }}
+          >
             <motion.button
               whileTap={{ scale: 0.82 }}
-              className="p-1.5 rounded-full active:bg-white/10 touch-manipulation"
+              className="w-9 h-9 flex items-center justify-center rounded-full active:bg-white/10 touch-manipulation"
               onClick={handlePrev}
               aria-label="Previous"
             >
@@ -255,19 +284,19 @@ export function MiniPlayer() {
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.82 }}
-              className="p-1.5 rounded-full active:bg-white/10 touch-manipulation"
+              className="w-9 h-9 flex items-center justify-center rounded-full active:bg-white/10 touch-manipulation"
               onClick={handlePlayPause}
               aria-label={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? (
-                <Pause className="w-3.5 h-3.5 text-foreground fill-foreground" />
+                <Pause className="w-4 h-4 text-foreground fill-foreground" />
               ) : (
-                <Play className="w-3.5 h-3.5 text-foreground fill-foreground" />
+                <Play className="w-4 h-4 text-foreground fill-foreground" />
               )}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.82 }}
-              className="p-1.5 rounded-full active:bg-white/10 touch-manipulation"
+              className="w-9 h-9 flex items-center justify-center rounded-full active:bg-white/10 touch-manipulation"
               onClick={handleNext}
               aria-label="Next"
             >
@@ -275,8 +304,8 @@ export function MiniPlayer() {
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.82 }}
-              className="p-1.5 rounded-full active:bg-white/10 touch-manipulation relative"
-              onClick={(e) => { e.stopPropagation(); e.preventDefault(); cycleRepeat(); }}
+              className="w-9 h-9 flex items-center justify-center rounded-full active:bg-white/10 touch-manipulation relative"
+              onClick={(e) => { e.stopPropagation(); e.preventDefault(); cycleRepeat(); showControls(); }}
               aria-label={`Repeat: ${repeatMode}`}
               title={`Repeat: ${repeatMode}`}
             >
@@ -288,10 +317,10 @@ export function MiniPlayer() {
                 />
               )}
               {repeatMode !== "off" && (
-                <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
               )}
             </motion.button>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </>
