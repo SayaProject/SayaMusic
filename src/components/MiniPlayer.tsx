@@ -15,6 +15,8 @@ export function MiniPlayer() {
   const playerRef = useRef<any>(null);
   const currentIdRef = useRef<string | null>(null);
   const readyRef = useRef(false);
+  const repeatModeRef = useRef(repeatMode);
+  useEffect(() => { repeatModeRef.current = repeatMode; }, [repeatMode]);
   const [isSwitching, setIsSwitching] = useState(false);
 
   // Crossfade: brief "switching" state on every track change for gapless feel
