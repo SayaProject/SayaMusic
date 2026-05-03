@@ -244,51 +244,51 @@ export function MiniPlayer() {
               </motion.div>
             </AnimatePresence>
           </div>
-          <div className="flex items-center gap-0.5 flex-shrink-0">
+          <div className="flex items-center gap-0 flex-shrink-0">
             <motion.button
               whileTap={{ scale: 0.82 }}
-              className="p-2 rounded-full active:bg-white/10 touch-manipulation"
+              className="p-1.5 rounded-full active:bg-white/10 touch-manipulation"
               onClick={handlePrev}
               aria-label="Previous"
             >
-              <SkipBack className="w-5 h-5 text-foreground fill-foreground" />
+              <SkipBack className="w-3.5 h-3.5 text-foreground fill-foreground" />
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.82 }}
-              className="p-2 rounded-full active:bg-white/10 touch-manipulation"
+              className="p-1.5 rounded-full active:bg-white/10 touch-manipulation"
               onClick={handlePlayPause}
               aria-label={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? (
-                <Pause className="w-5 h-5 text-foreground fill-foreground" />
+                <Pause className="w-3.5 h-3.5 text-foreground fill-foreground" />
               ) : (
-                <Play className="w-5 h-5 text-foreground fill-foreground" />
+                <Play className="w-3.5 h-3.5 text-foreground fill-foreground" />
               )}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.82 }}
-              className="p-2 rounded-full active:bg-white/10 touch-manipulation"
+              className="p-1.5 rounded-full active:bg-white/10 touch-manipulation"
               onClick={handleNext}
               aria-label="Next"
             >
-              <SkipForward className="w-5 h-5 text-foreground fill-foreground" />
+              <SkipForward className="w-3.5 h-3.5 text-foreground fill-foreground" />
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.82 }}
-              className="p-2 rounded-full active:bg-white/10 touch-manipulation relative"
+              className="p-1.5 rounded-full active:bg-white/10 touch-manipulation relative"
               onClick={(e) => { e.stopPropagation(); e.preventDefault(); cycleRepeat(); }}
               aria-label={`Repeat: ${repeatMode}`}
               title={`Repeat: ${repeatMode}`}
             >
               {repeatMode === "one" ? (
-                <Repeat1 className="w-5 h-5 text-primary" />
+                <Repeat1 className="w-3.5 h-3.5 text-primary" />
               ) : (
                 <Repeat
-                  className={`w-5 h-5 ${repeatMode === "all" ? "text-primary" : "text-muted-foreground"}`}
+                  className={`w-3.5 h-3.5 ${repeatMode === "all" ? "text-primary" : "text-muted-foreground"}`}
                 />
               )}
               {repeatMode !== "off" && (
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+                <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
               )}
             </motion.button>
           </div>
