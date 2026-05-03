@@ -18,6 +18,23 @@ export function MiniPlayer() {
   const repeatModeRef = useRef(repeatMode);
   useEffect(() => { repeatModeRef.current = repeatMode; }, [repeatMode]);
   const [isSwitching, setIsSwitching] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(true);
+  const hideTimerRef = useRef<number | null>(null);
+
+  const showControls = useCallback(() => {
+    setControlsVisible(true);
+    if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = window.setTimeout(() => setControlsVisible(false), 3500);
+  }, []);
+
+  // Start auto-hide timer when a track loads / changes
+  useEffect(() => {
+    if (!currentTrack) return;
+    showControls();
+    return () => {
+      if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+    };
+  }, [currentTrack?.id, showControls]);
 
   // Crossfade: brief "switching" state on every track change for gapless feel
   useEffect(() => {
