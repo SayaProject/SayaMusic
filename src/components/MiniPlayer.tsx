@@ -204,8 +204,10 @@ export function MiniPlayer() {
           initial={{ y: 40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className="glass-navbar rounded-2xl p-2.5 flex items-center gap-2 w-full max-w-sm pointer-events-auto"
-          onClick={(e) => e.stopPropagation()}
+          className="glass-navbar rounded-2xl pl-2 pr-1.5 py-1.5 flex items-center gap-2 w-full max-w-sm pointer-events-auto border border-white/10 backdrop-blur-2xl shadow-lg shadow-black/30"
+          style={{ backdropFilter: "blur(30px) saturate(180%)", WebkitBackdropFilter: "blur(30px) saturate(180%)" }}
+          onClick={(e) => { e.stopPropagation(); showControls(); }}
+          onPointerMove={showControls}
         >
           <div className="relative w-10 h-10 flex-shrink-0 overflow-hidden rounded-lg">
             <AnimatePresence mode="popLayout" initial={false}>
