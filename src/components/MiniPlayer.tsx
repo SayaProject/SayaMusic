@@ -1,4 +1,4 @@
-import { SkipForward, SkipBack, Play, Pause } from "lucide-react";
+import { SkipForward, SkipBack, Play, Pause, Repeat, Repeat1 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useCallback, useState } from "react";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
@@ -11,10 +11,12 @@ declare global {
 }
 
 export function MiniPlayer() {
-  const { currentTrack, isPlaying, togglePlay, playNext, playPrev } = usePlayerStore();
+  const { currentTrack, isPlaying, togglePlay, playNext, playPrev, repeatMode, cycleRepeat, reduceMotion } = usePlayerStore();
   const playerRef = useRef<any>(null);
   const currentIdRef = useRef<string | null>(null);
   const readyRef = useRef(false);
+  const repeatModeRef = useRef(repeatMode);
+  useEffect(() => { repeatModeRef.current = repeatMode; }, [repeatMode]);
   const [isSwitching, setIsSwitching] = useState(false);
 
   // Crossfade: brief "switching" state on every track change for gapless feel
@@ -94,7 +96,13 @@ export function MiniPlayer() {
               try { e.target.playVideo(); } catch {}
             },
             onStateChange: (e: any) => {
-              if (e.data === 0) playNext(); // ended -> next
+              if (e.data === 0) {
+                if (repeatModeRef.current === "one") {
+                  try { e.target.seekTo(0); e.target.playVideo(); } catch {}
+                } else {
+                  playNext();
+                }
+              }
             },
           },
         });
@@ -195,14 +203,14 @@ export function MiniPlayer() {
                   opacity: 1,
                   scale: 1,
                   filter: "blur(0px)",
-                  rotate: isPlaying ? 360 : 0,
+                  rotate: isPlaying && !reduceMotion ? 360 : 0,
                 }}
                 exit={{ opacity: 0, scale: 0.9, filter: "blur(4px)" }}
                 transition={{
-                  opacity: { duration: 0.32, ease: "easeOut" },
-                  scale: { duration: 0.32, ease: "easeOut" },
-                  filter: { duration: 0.32, ease: "easeOut" },
-                  rotate: isPlaying
+                  opacity: { duration: reduceMotion ? 0.15 : 0.32, ease: "easeOut" },
+                  scale: { duration: reduceMotion ? 0.15 : 0.32, ease: "easeOut" },
+                  filter: { duration: reduceMotion ? 0 : 0.32, ease: "easeOut" },
+                  rotate: isPlaying && !reduceMotion
                     ? { duration: 8, repeat: Infinity, ease: "linear" }
                     : { duration: 0 },
                 }}
@@ -264,6 +272,24 @@ export function MiniPlayer() {
               aria-label="Next"
             >
               <SkipForward className="w-5 h-5 text-foreground fill-foreground" />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.82 }}
+              className="p-2 rounded-full active:bg-white/10 touch-manipulation relative"
+              onClick={(e) => { e.stopPropagation(); e.preventDefault(); cycleRepeat(); }}
+              aria-label={`Repeat: ${repeatMode}`}
+              title={`Repeat: ${repeatMode}`}
+            >
+              {repeatMode === "one" ? (
+                <Repeat1 className="w-5 h-5 text-primary" />
+              ) : (
+                <Repeat
+                  className={`w-5 h-5 ${repeatMode === "all" ? "text-primary" : "text-muted-foreground"}`}
+                />
+              )}
+              {repeatMode !== "off" && (
+                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+              )}
             </motion.button>
           </div>
         </motion.div>

@@ -1,9 +1,10 @@
-import { Clock, Heart, Crown, Shield } from "lucide-react";
-import { motion } from "framer-motion";
+import { Clock, Heart, Crown, Shield, Sparkles } from "lucide-react";
+import { motion, type Transition } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getTelegramUser } from "@/lib/telegram";
 import { getOwnerRole } from "@/lib/owner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Switch } from "@/components/ui/switch";
 import { SongRow } from "./SongRow";
 
 export function ProfileTab() {
@@ -17,7 +18,20 @@ export function ProfileTab() {
   const roleTip = isOwner
     ? "Verified account owner of this app"
     : "Trusted co-owner — helps manage this app";
-  const { played, liked, downloads, recentlyPlayed, likedSongs } = usePlayerStore();
+  const { played, liked, downloads, recentlyPlayed, likedSongs, reduceMotion, setReduceMotion } = usePlayerStore();
+  // When reduceMotion is on, neutralize repeating animations
+  const badgePulse = reduceMotion ? { scale: 1, rotate: 0 } : { scale: [1, 1.12, 1], rotate: [0, -8, 8, 0] };
+  const badgePulseTransition: Transition = reduceMotion
+    ? { delay: 0.4 }
+    : {
+        delay: 0.4,
+        scale: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+        rotate: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+      };
+  const wiggleAnim = reduceMotion ? { rotate: 0 } : { rotate: [0, -10, 10, 0] };
+  const wiggleTransition: Transition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 2.4, repeat: Infinity, ease: "easeInOut" };
 
   return (
     <div className="flex flex-col pb-36 no-capture">
@@ -42,15 +56,8 @@ export function ProfileTab() {
                       <motion.button
                         type="button"
                         initial={{ scale: 0, rotate: -30 }}
-                        animate={{
-                          scale: [1, 1.12, 1],
-                          rotate: [0, -8, 8, 0],
-                        }}
-                        transition={{
-                          delay: 0.4,
-                          scale: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
-                          rotate: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
-                        }}
+                        animate={badgePulse}
+                        transition={badgePulseTransition}
                         whileHover={{ scale: 1.2 }}
                         whileTap={{ scale: 0.9 }}
                         className={`absolute -top-1 -right-1 ${badgeClass} rounded-full p-1.5 cursor-help`}
@@ -101,9 +108,9 @@ export function ProfileTab() {
                   className={`${badgeClass} mt-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider flex items-center gap-1 cursor-help`}
                 >
                   <motion.span
-                    animate={{ rotate: [0, -10, 10, 0] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                    className="inline-flex"
+                  animate={wiggleAnim}
+                  transition={wiggleTransition}
+                  className="inline-flex"
                   >
                     <RoleIcon className="w-3 h-3" />
                   </motion.span>
@@ -143,6 +150,22 @@ export function ProfileTab() {
       </motion.div>
 
       <div className="px-4 space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="glass-card rounded-xl p-4 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">Reduce Motion</p>
+              <p className="text-[11px] text-muted-foreground">Minimize crown & badge animations</p>
+            </div>
+          </div>
+          <Switch checked={reduceMotion} onCheckedChange={setReduceMotion} aria-label="Reduce motion" />
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
