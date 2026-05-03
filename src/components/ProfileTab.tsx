@@ -21,7 +21,7 @@ export function ProfileTab() {
   const { played, liked, downloads, recentlyPlayed, likedSongs, reduceMotion, setReduceMotion } = usePlayerStore();
   // When reduceMotion is on, neutralize repeating animations
   const badgePulse = reduceMotion ? { scale: 1, rotate: 0 } : { scale: [1, 1.12, 1], rotate: [0, -8, 8, 0] };
-  const badgePulseTransition = reduceMotion
+  const badgePulseTransition: Transition = reduceMotion
     ? { delay: 0.4 }
     : {
         delay: 0.4,
@@ -29,7 +29,7 @@ export function ProfileTab() {
         rotate: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
       };
   const wiggleAnim = reduceMotion ? { rotate: 0 } : { rotate: [0, -10, 10, 0] };
-  const wiggleTransition = reduceMotion
+  const wiggleTransition: Transition = reduceMotion
     ? { duration: 0 }
     : { duration: 2.4, repeat: Infinity, ease: "easeInOut" };
 
