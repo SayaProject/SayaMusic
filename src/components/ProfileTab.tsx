@@ -1,5 +1,5 @@
 import { Clock, Heart, Crown, Shield, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Transition } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getTelegramUser } from "@/lib/telegram";
 import { getOwnerRole } from "@/lib/owner";
