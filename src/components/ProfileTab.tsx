@@ -56,15 +56,8 @@ export function ProfileTab() {
                       <motion.button
                         type="button"
                         initial={{ scale: 0, rotate: -30 }}
-                        animate={{
-                          scale: [1, 1.12, 1],
-                          rotate: [0, -8, 8, 0],
-                        }}
-                        transition={{
-                          delay: 0.4,
-                          scale: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
-                          rotate: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
-                        }}
+                        animate={badgePulse}
+                        transition={badgePulseTransition}
                         whileHover={{ scale: 1.2 }}
                         whileTap={{ scale: 0.9 }}
                         className={`absolute -top-1 -right-1 ${badgeClass} rounded-full p-1.5 cursor-help`}
