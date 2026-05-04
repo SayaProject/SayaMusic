@@ -1,4 +1,4 @@
-// Owner & Co-owner identification for the profile badges.
+// Owner / Co-owner / Queen identification for the profile badges.
 
 import type { TelegramUser } from "./telegram";
 
@@ -6,18 +6,23 @@ import type { TelegramUser } from "./telegram";
 export const OWNER_TELEGRAM_IDS: number[] = [1329546526];
 // Co-owner numeric Telegram IDs.
 export const COOWNER_TELEGRAM_IDS: number[] = [5669044543];
+// Queen numeric Telegram IDs.
+export const QUEEN_TELEGRAM_IDS: number[] = [8272973918];
 
 // Username fallbacks (case-insensitive, no @).
 export const OWNER_USERNAMES: string[] = ["shnwaz"];
 export const COOWNER_USERNAMES: string[] = [];
+export const QUEEN_USERNAMES: string[] = [];
 
-export type OwnerRole = "owner" | "coowner" | null;
+export type OwnerRole = "owner" | "coowner" | "queen" | null;
 
 export function getOwnerRole(user: TelegramUser): OwnerRole {
   if (user.id && OWNER_TELEGRAM_IDS.includes(user.id)) return "owner";
   if (user.username && OWNER_USERNAMES.includes(user.username.toLowerCase())) return "owner";
   if (user.id && COOWNER_TELEGRAM_IDS.includes(user.id)) return "coowner";
   if (user.username && COOWNER_USERNAMES.includes(user.username.toLowerCase())) return "coowner";
+  if (user.id && QUEEN_TELEGRAM_IDS.includes(user.id)) return "queen";
+  if (user.username && QUEEN_USERNAMES.includes(user.username.toLowerCase())) return "queen";
   return null;
 }
 
