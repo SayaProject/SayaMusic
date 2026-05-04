@@ -1,4 +1,4 @@
-import { Clock, Heart, Crown, Shield, Sparkles, Gem } from "lucide-react";
+import { Clock, Heart, Crown, Shield, Sparkles, Gem, Heart as HeartIcon } from "lucide-react";
 import { motion, type Transition } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getTelegramUser } from "@/lib/telegram";
@@ -13,14 +13,23 @@ export function ProfileTab() {
   const isOwner = role === "owner";
   const isCoOwner = role === "coowner";
   const isQueen = role === "queen";
-  const badgeClass = isOwner ? "owner-badge" : isQueen ? "queen-badge" : "coowner-badge";
-  const RoleIcon = isOwner ? Crown : isQueen ? Gem : Shield;
-  const roleLabel = isOwner ? "OWNER" : isQueen ? "QUEEN" : "CO-OWNER";
+  const isCutie = role === "cutie";
+  const badgeClass = isOwner
+    ? "owner-badge"
+    : isQueen
+      ? "queen-badge"
+      : isCutie
+        ? "cutie-badge"
+        : "coowner-badge";
+  const RoleIcon = isOwner ? Crown : isQueen ? Gem : isCutie ? HeartIcon : Shield;
+  const roleLabel = isOwner ? "OWNER" : isQueen ? "QUEEN" : isCutie ? "CUTIE" : "CO-OWNER";
   const roleTip = isOwner
     ? "Verified account owner of this app"
     : isQueen
       ? "Royal Queen — honored member of this app"
-      : "Trusted co-owner — helps manage this app";
+      : isCutie
+        ? "Cutie 🌸 — adorable member of this app"
+        : "Trusted co-owner — helps manage this app";
   const { played, liked, downloads, recentlyPlayed, likedSongs, reduceMotion, setReduceMotion } = usePlayerStore();
   // When reduceMotion is on, neutralize repeating animations
   const badgePulse = reduceMotion ? { scale: 1, rotate: 0 } : { scale: [1, 1.12, 1], rotate: [0, -8, 8, 0] };
