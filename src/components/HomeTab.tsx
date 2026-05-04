@@ -165,7 +165,6 @@ export function HomeTab() {
         >
           <div>
             <h1 className="text-2xl font-bold text-foreground">{greeting()}</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">{timeLabel}</p>
           </div>
 
           {user.photo_url ? (
