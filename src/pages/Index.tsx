@@ -40,20 +40,16 @@ const Index = () => {
     });
   };
 
-  // Smooth slide+fade transition for the active tab; inactive tabs stay mounted (display: none).
+  // Smooth fade transition for the active tab; inactive tabs stay mounted (display: none).
   const renderTab = (key: TabKey, node: React.ReactNode) => {
     const isActive = tab === key;
     return (
       <motion.div
         key={key}
-        animate={
-          isActive
-            ? { opacity: 1, x: 0, scale: 1 }
-            : { opacity: 0, x: direction * 24, scale: 0.985 }
-        }
-        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+        animate={{ opacity: isActive ? 1 : 0 }}
+        transition={{ duration: 0.35, ease: "easeInOut" }}
         style={{ display: isActive ? "block" : "none" }}
-        className="min-h-screen will-change-transform"
+        className="min-h-screen"
       >
         {node}
       </motion.div>
