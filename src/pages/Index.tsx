@@ -10,8 +10,11 @@ import { rotateAndApplyTheme } from "@/lib/theme";
 
 type TabKey = "home" | "playlist" | "profile";
 
+const TAB_ORDER: TabKey[] = ["home", "playlist", "profile"];
+
 const Index = () => {
   const [tab, setTab] = useState<TabKey>("home");
+  const [direction, setDirection] = useState<1 | -1>(1);
   const prevTabRef = useRef<TabKey>("home");
   const scrollRef = useRef<Record<TabKey, number>>({
     home: 0,
@@ -24,48 +27,45 @@ const Index = () => {
     rotateAndApplyTheme();
   }, []);
 
-  // Preserve scroll position per tab across switches
   const handleNavigate = (next: string) => {
     const t = next as TabKey;
     if (t === prevTabRef.current) return;
-    // Save current scroll for the tab we're leaving
+    const dir = TAB_ORDER.indexOf(t) > TAB_ORDER.indexOf(prevTabRef.current) ? 1 : -1;
+    setDirection(dir);
     scrollRef.current[prevTabRef.current] = window.scrollY;
     prevTabRef.current = t;
     setTab(t);
-    // Restore the destination tab's scroll on next paint
     requestAnimationFrame(() => {
       window.scrollTo({ top: scrollRef.current[t] || 0, behavior: "auto" });
     });
   };
 
+  // Smooth slide+fade transition for the active tab; inactive tabs stay mounted (display: none).
+  const renderTab = (key: TabKey, node: React.ReactNode) => {
+    const isActive = tab === key;
+    return (
+      <motion.div
+        key={key}
+        animate={
+          isActive
+            ? { opacity: 1, x: 0, scale: 1 }
+            : { opacity: 0, x: direction * 24, scale: 0.985 }
+        }
+        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+        style={{ display: isActive ? "block" : "none" }}
+        className="min-h-screen will-change-transform"
+      >
+        {node}
+      </motion.div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background flex justify-center">
       <div className="w-full max-w-lg relative overflow-x-hidden min-h-screen">
-        {/* Keep all tabs mounted: preserves search results, focus, and avoids reloading the player */}
-        <motion.div
-          animate={{ opacity: tab === "home" ? 1 : 0 }}
-          transition={{ duration: 0.18 }}
-          style={{ display: tab === "home" ? "block" : "none" }}
-          className="min-h-screen"
-        >
-          <HomeTab />
-        </motion.div>
-        <motion.div
-          animate={{ opacity: tab === "playlist" ? 1 : 0 }}
-          transition={{ duration: 0.18 }}
-          style={{ display: tab === "playlist" ? "block" : "none" }}
-          className="min-h-screen"
-        >
-          <PlaylistTab />
-        </motion.div>
-        <motion.div
-          animate={{ opacity: tab === "profile" ? 1 : 0 }}
-          transition={{ duration: 0.18 }}
-          style={{ display: tab === "profile" ? "block" : "none" }}
-          className="min-h-screen"
-        >
-          <ProfileTab />
-        </motion.div>
+        {renderTab("home", <HomeTab />)}
+        {renderTab("playlist", <PlaylistTab />)}
+        {renderTab("profile", <ProfileTab />)}
 
         <MiniPlayer />
         <BottomNav active={tab} onNavigate={handleNavigate} />
