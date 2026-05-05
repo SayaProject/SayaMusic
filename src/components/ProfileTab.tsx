@@ -140,8 +140,30 @@ export function ProfileTab() {
           <p className="text-sm text-primary mt-1">@{user.username}</p>
         )}
         <span className="glass-card mt-2 px-3 py-1 rounded-full text-xs text-muted-foreground">
-          ID: {user.id}
+          {user.email ? user.email : `ID: ${user.id}`}
         </span>
+
+        {!inTelegram && !session && (
+          <Button
+            onClick={() => signInWithGoogle()}
+            size="sm"
+            className="mt-3 gap-2"
+          >
+            <LogIn className="w-4 h-4" />
+            Sign in with Google
+          </Button>
+        )}
+        {!inTelegram && session && (
+          <Button
+            onClick={() => signOut()}
+            size="sm"
+            variant="ghost"
+            className="mt-3 gap-2 text-muted-foreground"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            Sign out
+          </Button>
+        )}
       </div>
 
       <motion.div
