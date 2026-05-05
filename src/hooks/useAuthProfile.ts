@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { getTelegramUser, type TelegramUser } from "@/lib/telegram";
 import type { Session } from "@supabase/supabase-js";
 
