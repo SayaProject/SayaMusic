@@ -9,7 +9,11 @@ export type ThemeName =
   | "rose"
   | "mono"
   | "aurora"
-  | "midnight";
+  | "midnight"
+  | "cottoncandy"
+  | "neonmint"
+  | "crimson"
+  | "lavender";
 
 interface Theme {
   name: ThemeName;
@@ -218,6 +222,105 @@ export const themes: Theme[] = [
       "--header-grad": "linear-gradient(180deg, hsl(45 80% 30% / 0.4) 0%, hsl(230 30% 7%) 100%)",
       "--profile-grad": "linear-gradient(180deg, hsl(30 80% 32% / 0.45) 0%, hsl(230 30% 7%) 100%)",
       "--page-bg": "radial-gradient(1200px 600px at 100% 100%, hsl(45 90% 22% / 0.45), transparent 60%), radial-gradient(900px 500px at 0% 0%, hsl(230 60% 18% / 0.6), transparent 60%), hsl(230 30% 7%)",
+    },
+  {
+    name: "cottoncandy",
+    label: "Cotton Candy",
+    vars: {
+      "--background": "320 25% 10%",
+      "--foreground": "320 25% 96%",
+      "--card": "320 22% 15%",
+      "--popover": "320 22% 15%",
+      "--primary": "320 90% 72%",
+      "--primary-foreground": "320 40% 10%",
+      "--secondary": "320 20% 20%",
+      "--accent": "200 90% 70%",
+      "--accent-foreground": "200 50% 10%",
+      "--ring": "320 90% 72%",
+      "--muted": "320 18% 25%",
+      "--muted-foreground": "320 15% 70%",
+      "--border": "320 18% 25%",
+      "--input": "320 18% 25%",
+      "--glass-card-bg": "320 24% 14% / 0.7",
+      "--glass-navbar-bg": "320 26% 11% / 0.92",
+      "--header-grad": "linear-gradient(180deg, hsl(320 80% 38% / 0.5) 0%, hsl(320 25% 10%) 100%)",
+      "--profile-grad": "linear-gradient(180deg, hsl(200 80% 35% / 0.5) 0%, hsl(320 25% 10%) 100%)",
+      "--page-bg": "radial-gradient(1200px 600px at 0% 0%, hsl(320 90% 32% / 0.55), transparent 60%), radial-gradient(900px 500px at 100% 100%, hsl(200 90% 28% / 0.5), transparent 60%), hsl(320 25% 10%)",
+    },
+  },
+  {
+    name: "neonmint",
+    label: "Neon Mint",
+    vars: {
+      "--background": "170 30% 7%",
+      "--foreground": "150 25% 96%",
+      "--card": "170 25% 12%",
+      "--popover": "170 25% 12%",
+      "--primary": "150 95% 55%",
+      "--primary-foreground": "170 50% 8%",
+      "--secondary": "170 22% 17%",
+      "--accent": "180 95% 60%",
+      "--accent-foreground": "170 50% 8%",
+      "--ring": "150 95% 55%",
+      "--muted": "170 18% 22%",
+      "--muted-foreground": "160 15% 65%",
+      "--border": "170 18% 22%",
+      "--input": "170 18% 22%",
+      "--glass-card-bg": "170 28% 11% / 0.7",
+      "--glass-navbar-bg": "170 32% 8% / 0.92",
+      "--header-grad": "linear-gradient(180deg, hsl(150 90% 25% / 0.55) 0%, hsl(170 30% 7%) 100%)",
+      "--profile-grad": "linear-gradient(180deg, hsl(180 90% 25% / 0.5) 0%, hsl(170 30% 7%) 100%)",
+      "--page-bg": "radial-gradient(1200px 600px at 50% -10%, hsl(150 95% 22% / 0.6), transparent 60%), radial-gradient(900px 500px at 100% 100%, hsl(180 95% 22% / 0.45), transparent 60%), hsl(170 30% 7%)",
+    },
+  },
+  {
+    name: "crimson",
+    label: "Crimson Ember",
+    vars: {
+      "--background": "0 25% 8%",
+      "--foreground": "20 30% 96%",
+      "--card": "0 22% 13%",
+      "--popover": "0 22% 13%",
+      "--primary": "0 85% 60%",
+      "--primary-foreground": "0 0% 100%",
+      "--secondary": "0 20% 18%",
+      "--accent": "30 90% 60%",
+      "--accent-foreground": "0 50% 10%",
+      "--ring": "0 85% 60%",
+      "--muted": "0 18% 22%",
+      "--muted-foreground": "10 15% 65%",
+      "--border": "0 18% 22%",
+      "--input": "0 18% 22%",
+      "--glass-card-bg": "0 24% 12% / 0.7",
+      "--glass-navbar-bg": "0 28% 9% / 0.92",
+      "--header-grad": "linear-gradient(180deg, hsl(0 80% 30% / 0.55) 0%, hsl(0 25% 8%) 100%)",
+      "--profile-grad": "linear-gradient(180deg, hsl(30 80% 32% / 0.5) 0%, hsl(0 25% 8%) 100%)",
+      "--page-bg": "radial-gradient(1200px 600px at 0% 0%, hsl(0 85% 25% / 0.6), transparent 60%), radial-gradient(900px 500px at 100% 100%, hsl(30 90% 25% / 0.45), transparent 60%), hsl(0 25% 8%)",
+    },
+  },
+  {
+    name: "lavender",
+    label: "Lavender Dream",
+    vars: {
+      "--background": "250 28% 9%",
+      "--foreground": "260 25% 96%",
+      "--card": "250 24% 14%",
+      "--popover": "250 24% 14%",
+      "--primary": "260 80% 72%",
+      "--primary-foreground": "250 40% 10%",
+      "--secondary": "250 22% 19%",
+      "--accent": "200 75% 70%",
+      "--accent-foreground": "200 50% 10%",
+      "--ring": "260 80% 72%",
+      "--muted": "250 18% 23%",
+      "--muted-foreground": "250 12% 68%",
+      "--border": "250 18% 23%",
+      "--input": "250 18% 23%",
+      "--glass-card-bg": "250 26% 12% / 0.7",
+      "--glass-navbar-bg": "250 30% 9% / 0.92",
+      "--header-grad": "linear-gradient(180deg, hsl(260 70% 35% / 0.5) 0%, hsl(250 28% 9%) 100%)",
+      "--profile-grad": "linear-gradient(180deg, hsl(200 70% 32% / 0.5) 0%, hsl(250 28% 9%) 100%)",
+      "--page-bg": "radial-gradient(1200px 600px at 100% 0%, hsl(260 80% 28% / 0.55), transparent 60%), radial-gradient(900px 500px at 0% 100%, hsl(200 75% 25% / 0.45), transparent 60%), hsl(250 28% 9%)",
     },
   },
 ];
