@@ -223,6 +223,7 @@ export const themes: Theme[] = [
       "--profile-grad": "linear-gradient(180deg, hsl(30 80% 32% / 0.45) 0%, hsl(230 30% 7%) 100%)",
       "--page-bg": "radial-gradient(1200px 600px at 100% 100%, hsl(45 90% 22% / 0.45), transparent 60%), radial-gradient(900px 500px at 0% 0%, hsl(230 60% 18% / 0.6), transparent 60%), hsl(230 30% 7%)",
     },
+  },
   {
     name: "cottoncandy",
     label: "Cotton Candy",
