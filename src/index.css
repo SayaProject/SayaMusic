@@ -150,10 +150,40 @@
   }
 
   .cutie-badge {
-    background: linear-gradient(135deg, hsl(340 95% 75%) 0%, hsl(320 85% 70%) 50%, hsl(15 95% 75%) 100%);
-    color: hsl(0 0% 100%);
-    box-shadow: 0 4px 16px hsl(340 95% 75% / 0.55), inset 0 1px 0 hsl(0 0% 100% / 0.3);
-    text-shadow: 0 1px 2px hsl(0 0% 0% / 0.25);
+    background:
+      linear-gradient(135deg, hsl(340 100% 80%) 0%, hsl(320 95% 75%) 35%, hsl(280 85% 78%) 65%, hsl(15 100% 80%) 100%);
+    color: hsl(340 60% 25%);
+    box-shadow:
+      0 4px 18px hsl(340 95% 75% / 0.65),
+      0 0 24px hsl(320 90% 75% / 0.45),
+      inset 0 1px 0 hsl(0 0% 100% / 0.55),
+      inset 0 -2px 6px hsl(340 80% 60% / 0.3);
+    text-shadow: 0 1px 2px hsl(0 0% 100% / 0.4);
+    border: 1px solid hsl(0 0% 100% / 0.5);
+    position: relative;
+    overflow: hidden;
+    animation: cutieShimmer 3s ease-in-out infinite;
+  }
+
+  .cutie-badge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, hsl(0 0% 100% / 0.6) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: cutieSheen 2.8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes cutieShimmer {
+    0%, 100% { box-shadow: 0 4px 18px hsl(340 95% 75% / 0.65), 0 0 24px hsl(320 90% 75% / 0.45), inset 0 1px 0 hsl(0 0% 100% / 0.55), inset 0 -2px 6px hsl(340 80% 60% / 0.3); }
+    50%      { box-shadow: 0 6px 24px hsl(340 100% 78% / 0.85), 0 0 32px hsl(320 95% 78% / 0.65), inset 0 1px 0 hsl(0 0% 100% / 0.7),  inset 0 -2px 6px hsl(340 80% 60% / 0.3); }
+  }
+
+  @keyframes cutieSheen {
+    0%   { transform: translateX(-120%); }
+    60%  { transform: translateX(120%); }
+    100% { transform: translateX(120%); }
   }
 
   .song-row {
