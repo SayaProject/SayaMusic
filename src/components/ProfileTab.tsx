@@ -1,15 +1,14 @@
-import { Clock, Heart, Crown, Shield, Sparkles, Gem, Heart as HeartIcon, LogIn, LogOut } from "lucide-react";
+import { Clock, Heart, Crown, Shield, Sparkles, Gem, Heart as HeartIcon } from "lucide-react";
 import { motion, type Transition } from "framer-motion";
 import { usePlayerStore } from "@/hooks/usePlayerStore";
 import { getOwnerRole } from "@/lib/owner";
 import { useAuthProfile } from "@/hooks/useAuthProfile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { SongRow } from "./SongRow";
 
 export function ProfileTab() {
-  const { profile: user, session, inTelegram, signInWithGoogle, signOut } = useAuthProfile();
+  const { profile: user } = useAuthProfile();
   const role = getOwnerRole(user as any);
   const isOwner = role === "owner";
   const isCoOwner = role === "coowner";
@@ -143,27 +142,6 @@ export function ProfileTab() {
           {user.email ? user.email : `ID: ${user.id}`}
         </span>
 
-        {!inTelegram && !session && (
-          <Button
-            onClick={() => signInWithGoogle()}
-            size="sm"
-            className="mt-3 gap-2"
-          >
-            <LogIn className="w-4 h-4" />
-            Sign in with Google
-          </Button>
-        )}
-        {!inTelegram && session && (
-          <Button
-            onClick={() => signOut()}
-            size="sm"
-            variant="ghost"
-            className="mt-3 gap-2 text-muted-foreground"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            Sign out
-          </Button>
-        )}
       </div>
 
       <motion.div
