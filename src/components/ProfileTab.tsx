@@ -141,7 +141,7 @@ export function ProfileTab() {
         <span className="glass-card mt-2 px-3 py-1 rounded-full text-xs text-muted-foreground">
           {user.email ? user.email : `ID: ${user.id}`}
         </span>
-
+        </div>
       </div>
 
       <motion.div
