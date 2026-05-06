@@ -47,7 +47,13 @@ export function ProfileTab() {
 
   return (
     <div className="flex flex-col pb-36 no-capture">
-      <div className="gradient-profile pt-8 pb-6 flex flex-col items-center">
+      <div className="relative px-4 pt-6 pb-4">
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[2rem]">
+          <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-3xl opacity-60" style={{ background: "radial-gradient(circle, hsl(var(--primary) / 0.55), transparent 70%)" }} />
+          <div className="absolute -bottom-20 -right-10 w-56 h-56 rounded-full blur-3xl opacity-50" style={{ background: "radial-gradient(circle, hsl(var(--accent) / 0.5), transparent 70%)" }} />
+          <div className="absolute -top-10 -left-10 w-48 h-48 rounded-full blur-3xl opacity-40" style={{ background: "radial-gradient(circle, hsl(var(--accent) / 0.45), transparent 70%)" }} />
+        </div>
+        <div className="relative glass-card rounded-3xl gradient-profile pt-8 pb-6 px-4 flex flex-col items-center overflow-hidden">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
