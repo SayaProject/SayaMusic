@@ -76,3 +76,6 @@ src/
 
 [![Join on Telegram](https://img.shields.io/badge/Join-SayaProject-26A5E4?logo=telegram&logoColor=white)](https://t.me/SayaProject)
 
+## Developer
+
+[![GitHub](https://img.shields.io/badge/shnwazdeveloper-181717?logo=github&logoColor=white)](https://github.com/shnwazdeveloper)
