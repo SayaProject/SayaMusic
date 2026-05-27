@@ -1,4 +1,4 @@
-# 🎵 SayaMusic
+#  SayaMusic
 
 A music player **Telegram Mini App** — stream trending YouTube music without leaving Telegram.
 
@@ -12,11 +12,11 @@ A music player **Telegram Mini App** — stream trending YouTube music without l
 
 ## Features
 
-- 🏠 **Home** — trending YouTube feed with infinite scroll and live search
-- 🎵 **Player** — persistent mini player with full queue management
-- 📋 **Playlists** — create and sync playlists via Supabase
-- 👤 **Profile** — Telegram identity + Google OAuth login
-- 🌀 **Animations** — smooth tab transitions with Framer Motion
+-  **Home** — trending YouTube feed with infinite scroll and live search
+- **Player** — persistent mini player with full queue management
+- **Playlists** — create and sync playlists via Supabase
+-  **Profile** — Telegram identity + Google OAuth login
+- **Animations** — smooth tab transitions with Framer Motion
 
 ---
 
